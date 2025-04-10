@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}Clinique 221{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚕️</text></svg>">
+        
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        
+        <!-- FontAwesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        
+        <!-- Custom styles -->
+        <style>
+            :root {
+                --primary-green: #28a745;
+                --light-green: #d4edda;
+                --dark-green: #218838;
+                --white: #ffffff;
+            }
+            
+            body {
+                background-color: var(--white);
+            }
+            
+            .navbar-brand {
+                font-weight: bold;
+                color: var(--primary-green) !important;
+            }
+            
+            .navbar {
+                background-color: var(--white) !important;
+                border-bottom: 1px solid var(--primary-green);
+            }
+            
+            .nav-link {
+                color: var(--primary-green);
+            }
+            
+            .nav-link:hover {
+                color: var(--dark-green);
+            }
+            
+            .footer {
+                background-color: var(--white);
+                padding: 20px 0;
+                margin-top: 30px;
+                border-top: 1px solid var(--primary-green);
+            }
+            
+            .btn-primary {
+                background-color: var(--primary-green);
+                border-color: var(--primary-green);
+            }
+            
+            .btn-primary:hover {
+                background-color: var(--dark-green);
+                border-color: var(--dark-green);
+            }
+            
+            .card {
+                margin-bottom: 20px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                border: 1px solid var(--primary-green);
+            }
+            
+            .alert {
+                margin-top: 20px;
+            }
+            
+            .alert-success {
+                background-color: var(--light-green);
+                border-color: var(--primary-green);
+                color: var(--dark-green);
+            }
+            
+            .dropdown-menu {
+                border: 1px solid var(--primary-green);
+            }
+            
+            .dropdown-item:hover {
+                background-color: var(--light-green);
+            }
+            
+            .btn-outline-primary {
+                color: var(--primary-green);
+                border-color: var(--primary-green);
+            }
+            
+            .btn-outline-primary:hover {
+                background-color: var(--primary-green);
+                color: var(--white);
+            }
+            
+            h1, h2, h3, h4, h5, h6 {
+                color: var(--primary-green);
+            }
+        </style>
+        
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light mb-4">
+            <div class="container">
+                <a class="navbar-brand" href="{{ path('app_home') }}">
+                    <i class="fas fa-hospital me-2"></i>Clinique 221
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
+                        </li>
+                        
+                        {% if is_granted('ROLE_PATIENT') %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_patient_dashboard') }}">Tableau de bord</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_patient_rdv_list') }}">Mes rendez-vous</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_patient_consultation_index') }}">Mes consultations</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_patient_prestation_list') }}">Mes prestations</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_patient_medical_record') }}">Mon dossier médical</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                    
+                    <ul class="navbar-nav">
+                        {% if app.user %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user-circle me-1"></i> {{ app.user.nom }} {{ app.user.prenom }}
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Mon profil</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-danger" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Déconnexion</a></li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_login') }}"><i class="fas fa-sign-in-alt me-1"></i>Connexion</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_register') }}"><i class="fas fa-user-plus me-1"></i>Inscription</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="container">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }} alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            
+            {% block body %}{% endblock %}
+        </div>
+        
+        <footer class="footer mt-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-hospital me-2"></i>Clinique 221</h5>
+                        <p class="text-muted">Votre santé, notre priorité</p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <p class="text-muted">&copy; {{ "now"|date("Y") }} Clinique 221. Tous droits réservés.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        
+        <!-- Bootstrap JS Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

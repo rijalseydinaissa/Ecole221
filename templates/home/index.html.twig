@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Clinique 221{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 text-center mb-5">
+            <h1 class="display-4 text-success">Bienvenue à la Clinique 221</h1>
+            <p class="lead text-muted">Votre santé est notre priorité</p>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" class="img-fluid rounded" alt="Clinique 221">
+        </div>
+        <div class="col-md-6">
+            <h2 class="text-success">À propos de nous</h2>
+            <p>La clinique 221 est un établissement médical moderne offrant une large gamme de services médicaux de haute qualité. Notre équipe de professionnels de la santé est dédiée à fournir des soins personnalisés et efficaces.</p>
+            <p>Nous proposons des consultations médicales, des analyses, des radiographies et bien d'autres services pour assurer votre bien-être.</p>
+            
+            {% if not app.user %}
+            <div class="mt-4">
+                <a href="{{ path('app_login') }}" class="btn btn-success me-2">Connexion</a>
+                <a href="{{ path('app_register') }}" class="btn btn-outline-success">Inscription</a>
+            </div>
+            {% else %}
+            <div class="mt-4">
+                <a href="{{ path('app_patient_rdv_new') }}" class="btn btn-success">Prendre rendez-vous</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="text-center mb-4 text-success">Nos services</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-success">
+                <div class="card-body text-center">
+                    <i class="fas fa-user-md fa-3x mb-3 text-success"></i>
+                    <h5 class="card-title text-success">Consultations médicales</h5>
+                    <p class="card-text">Consultations avec des médecins généralistes et spécialistes pour diagnostiquer et traiter vos problèmes de santé.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-success">
+                <div class="card-body text-center">
+                    <i class="fas fa-flask fa-3x mb-3 text-success"></i>
+                    <h5 class="card-title text-success">Analyses médicales</h5>
+                    <p class="card-text">Services d'analyses médicales complets pour aider au diagnostic et au suivi des patients.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-success">
+                <div class="card-body text-center">
+                    <i class="fas fa-x-ray fa-3x mb-3 text-success"></i>
+                    <h5 class="card-title text-success">Radiologie</h5>
+                    <p class="card-text">Services de radiologie avancés, incluant radiographies, échographies et scanners.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,320 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord - Clinique 221{% endblock %}
+
+{% block body %}
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-success">Tableau de bord</h1>
+            <a href="{{ path('app_patient_consultation_new') }}" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Prendre rendez-vous
+            </a>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <!-- Prochains rendez-vous -->
+                <div class="card shadow-sm mb-4 border-success">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Prochains rendez-vous</h5>
+                        <a href="{{ path('app_patient_consultation_index', {filter: 'upcoming'}) }}" class="btn btn-light btn-sm">
+                            Voir tous <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        {% if upcoming_consultations is empty %}
+                            <div class="alert alert-info mb-0">
+                                <i class="bi bi-info-circle"></i> Vous n'avez pas de rendez-vous à venir.
+                                <a href="{{ path('app_patient_consultation_new') }}" class="alert-link">Prendre un rendez-vous</a>
+                            </div>
+                        {% else %}
+                            <div class="list-group list-group-flush">
+                                {% for consultation in upcoming_consultations %}
+                                    <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="fw-bold">{{ consultation.date|date('d/m/Y') }} à {{ consultation.heure|date('H:i') }}</div>
+                                            <div>Dr. {{ consultation.medecin.nom }} {{ consultation.medecin.prenom }}</div>
+                                            <div class="text-muted small">{{ consultation.motif }}</div>
+                                        </div>
+                                        <div class="d-flex">
+                                            <a href="{{ path('app_patient_consultation_show', {id: consultation.id}) }}" class="btn btn-sm btn-outline-success me-2">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#cancelModal{{ consultation.id }}">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Dernières consultations -->
+                <div class="card shadow-sm mb-4 border-success">
+                    <div class="card-header bg-white text-success border-success d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Dernières consultations</h5>
+                        <a href="{{ path('app_patient_consultation_index', {filter: 'past'}) }}" class="btn btn-outline-success btn-sm">
+                            Voir toutes <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        {% if recent_consultations is empty %}
+                            <div class="alert alert-info mb-0">
+                                <i class="bi bi-info-circle"></i> Vous n'avez pas encore eu de consultation.
+                            </div>
+                        {% else %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Médecin</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for consultation in recent_consultations %}
+                                            <tr>
+                                                <td>{{ consultation.date|date('d/m/Y') }}</td>
+                                                <td>Dr. {{ consultation.medecin.nom }}</td>
+                                                <td>
+                                                    <a href="{{ path('app_patient_consultation_show', {id: consultation.id}) }}" class="btn btn-sm btn-outline-success">
+                                                        <i class="bi bi-eye"></i> Détails
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Dernières prestations -->
+                <div class="card shadow-sm border-success">
+                    <div class="card-header bg-white text-success border-success d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Dernières prestations</h5>
+                        <a href="{{ path('app_patient_prestation_list') }}" class="btn btn-outline-success btn-sm">
+                            Voir toutes <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        {% if recent_prestations is empty %}
+                            <div class="alert alert-info mb-0">
+                                <i class="bi bi-info-circle"></i> Vous n'avez pas encore eu de prestation.
+                            </div>
+                        {% else %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Type</th>
+                                            <th>Statut</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for prestation in recent_prestations %}
+                                            <tr>
+                                                <td>{{ prestation.date|date('d/m/Y') }}</td>
+                                                <td>{{ prestation.type }}</td>
+                                                <td>
+                                                    {% if prestation.statut == 'planifie' %}
+                                                        <span class="badge bg-success">Planifiée</span>
+                                                    {% elseif prestation.statut == 'termine' %}
+                                                        <span class="badge bg-success">Terminée</span>
+                                                    {% elseif prestation.statut == 'annule' %}
+                                                        <span class="badge bg-danger">Annulée</span>
+                                                    {% elseif prestation.statut == 'en_cours' %}
+                                                        <span class="badge bg-warning text-dark">En cours</span>
+                                                    {% else %}
+                                                        <span class="badge bg-secondary">{{ prestation.statut|capitalize }}</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <a href="{{ path('app_patient_prestation_show', {id: prestation.id}) }}" class="btn btn-sm btn-outline-success">
+                                                        <i class="bi bi-eye"></i> Détails
+                                                    </a>
+                                                    {% if prestation.resultat %}
+                                                        <a href="{{ path('app_patient_resultat_show', {id: prestation.resultat.id}) }}" class="btn btn-sm btn-outline-success">
+                                                            <i class="bi bi-file-earmark-medical"></i> Résultat
+                                                        </a>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <!-- Profil patient -->
+                <div class="card shadow-sm mb-4 border-success">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="card-title mb-0">Mon profil</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <div class="avatar-circle mx-auto mb-3" style="background-color: #28a745;">
+                                <span class="avatar-initials">{{ app.user.prenom|first }}{{ app.user.nom|first }}</span>
+                            </div>
+                            <h5 class="text-success">{{ app.user.prenom }} {{ app.user.nom }}</h5>
+                            <p class="text-muted">Patient ID: {{ app.user.code }}</p>
+                        </div>
+                        
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Email:</span>
+                                <span class="text-muted">{{ app.user.email }}</span>
+                            </li>
+                            {% if app.user.telephone %}
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Téléphone:</span>
+                                    <span class="text-muted">{{ app.user.telephone }}</span>
+                                </li>
+                            {% endif %}
+                            {% if app.user.adresse %}
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Adresse:</span>
+                                    <span class="text-muted">{{ app.user.adresse }}</span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                        
+                        <div class="d-grid">
+                            <a href="{{ path('app_patient_profile') }}" class="btn btn-outline-success">
+                                <i class="bi bi-pencil-square"></i> Modifier mon profil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Antécédents médicaux -->
+                <div class="card shadow-sm mb-4 border-success">
+                    <div class="card-header bg-white text-success border-success">
+                        <h5 class="card-title mb-0">Antécédents médicaux</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if app.user.antecedentsMedicaux is empty %}
+                            <p class="text-muted mb-0">Aucun antécédent médical enregistré.</p>
+                        {% else %}
+                            <ul class="list-group">
+                                {% for antecedent in app.user.antecedentsMedicaux %}
+                                    <li class="list-group-item">{{ antecedent }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        
+                        <div class="d-grid mt-3">
+                            <a href="{{ path('app_patient_medical_record') }}" class="btn btn-outline-success">
+                                <i class="bi bi-clipboard2-pulse"></i> Voir mon dossier médical
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Liens rapides -->
+                <div class="card shadow-sm border-success">
+                    <div class="card-header bg-white text-success border-success">
+                        <h5 class="card-title mb-0">Liens rapides</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('app_patient_consultation_new') }}" class="btn btn-success">
+                                <i class="bi bi-calendar-plus"></i> Prendre rendez-vous
+                            </a>
+                            <a href="{{ path('app_patient_consultation_index') }}" class="btn btn-outline-success">
+                                <i class="bi bi-calendar-check"></i> Mes consultations
+                            </a>
+                            <a href="{{ path('app_patient_prestation_list') }}" class="btn btn-outline-success">
+                                <i class="bi bi-list-check"></i> Mes prestations
+                            </a>
+                            <a href="{{ path('app_patient_medical_record') }}" class="btn btn-outline-success">
+                                <i class="bi bi-clipboard2-pulse"></i> Mon dossier médical
+                            </a>
+                            <a href="{{ path('app_patient_messages') }}" class="btn btn-outline-success">
+                                <i class="bi bi-envelope"></i> Mes messages <span class="badge bg-danger ms-1">2</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modals d'annulation pour chaque consultation à venir -->
+    {% if upcoming_consultations is defined and upcoming_consultations|length > 0 %}
+        {% for consultation in upcoming_consultations %}
+            <div class="modal fade" id="cancelModal{{ consultation.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title">Annuler la consultation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Êtes-vous sûr de vouloir annuler votre consultation du {{ consultation.date|date('d/m/Y') }} à {{ consultation.heure|date('H:i') }} avec Dr. {{ consultation.medecin.nom }} {{ consultation.medecin.prenom }} ?</p>
+                            
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle"></i> 
+                                <strong>Attention:</strong> L'annulation moins de 24h avant le rendez-vous peut entraîner des frais.
+                            </div>
+                            
+                            <form id="cancelForm{{ consultation.id }}" action="{{ path('app_patient_consultation_cancel', {id: consultation.id}) }}" method="post">
+                                <div class="mb-3">
+                                    <label for="motifAnnulation{{ consultation.id }}" class="form-label">Motif d'annulation</label>
+                                    <select class="form-select" id="motifAnnulation{{ consultation.id }}" name="motif_annulation" required>
+                                        <option value="">Sélectionnez un motif</option>
+                                        <option value="indisponibilite">Indisponibilité</option>
+                                        <option value="amelioration">Amélioration de l'état de santé</option>
+                                        <option value="autre_medecin">Consultation avec un autre médecin</option>
+                                        <option value="autre">Autre motif</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="commentaire{{ consultation.id }}" class="form-label">Commentaire (optionnel)</label>
+                                    <textarea class="form-control" id="commentaire{{ consultation.id }}" name="commentaire" rows="3"></textarea>
+                                </div>
+                                <input type="hidden" name="token" value="{{ csrf_token('cancel-consultation') }}">
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+                            <button type="submit" form="cancelForm{{ consultation.id }}" class="btn btn-danger">Confirmer l'annulation</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .avatar-circle {
+            width: 80px;
+            height: 80px;
+            background-color: #28a745;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .avatar-initials {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+    </style>
+{% endblock %}

@@ -1,0 +1,202 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes messages - Clinique 221{% endblock %}
+
+{% block body %}
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Mes messages</h1>
+            <a href="{{ path('app_patient_dashboard') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Retour au tableau de bord
+            </a>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">Boîte de réception</h5>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <button class="list-group-item list-group-item-action d-flex justify-content-between active">
+                            <div>
+                                <div class="fw-bold">Dr. Ndiaye Abdoulaye</div>
+                                <div class="text-truncate">Résultats de votre consultation</div>
+                                <small class="text-muted">Il y a 2 jours</small>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">Non lu</span>
+                        </button>
+                        <button class="list-group-item list-group-item-action d-flex justify-content-between">
+                            <div>
+                                <div class="fw-bold">Service Laboratoire</div>
+                                <div class="text-truncate">Vos résultats d'analyse sont disponibles</div>
+                                <small class="text-muted">Il y a 1 semaine</small>
+                            </div>
+                            <span class="badge bg-secondary rounded-pill">Lu</span>
+                        </button>
+                        <button class="list-group-item list-group-item-action d-flex justify-content-between">
+                            <div>
+                                <div class="fw-bold">Secrétariat</div>
+                                <div class="text-truncate">Confirmation de votre rendez-vous</div>
+                                <small class="text-muted">Il y a 2 semaines</small>
+                            </div>
+                            <span class="badge bg-secondary rounded-pill">Lu</span>
+                        </button>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <small class="text-muted">3 messages</small>
+                            <div>
+                                <button class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Résultats de votre consultation</h5>
+                        <span class="badge bg-primary">Non lu</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex mb-3">
+                            <div class="me-3">
+                                <div class="avatar-circle" style="width: 50px; height: 50px;">
+                                    <span class="avatar-initials" style="font-size: 16px;">NA</span>
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Dr. Ndiaye Abdoulaye</h6>
+                                <div class="text-muted small">
+                                    <span>De: medecin1@example.com</span>
+                                    <span class="mx-1">•</span>
+                                    <span>À: vous</span>
+                                    <span class="mx-1">•</span>
+                                    <span>Il y a 2 jours</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="message-content mb-4">
+                            <p>Bonjour,</p>
+                            <p>Je vous envoie les résultats de votre consultation du {{ "now"|date_modify("-5 days")|date('d/m/Y') }}.</p>
+                            <p>Vos analyses sanguines sont normales, mais je vous conseille de continuer à surveiller votre tension artérielle qui est légèrement élevée.</p>
+                            <p>N'hésitez pas à me contacter si vous avez des questions.</p>
+                            <p>Cordialement,</p>
+                            <p>Dr. Ndiaye Abdoulaye<br>Médecine Générale<br>Clinique 221</p>
+                        </div>
+                        
+                        <div class="attachments mb-4">
+                            <h6><i class="bi bi-paperclip"></i> Pièces jointes (2)</h6>
+                            <div class="list-group">
+                                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                                    <i class="bi bi-file-pdf text-danger me-2" style="font-size: 1.5rem;"></i>
+                                    <div>
+                                        <div>Compte-rendu_consultation.pdf</div>
+                                        <small class="text-muted">156 KB</small>
+                                    </div>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+                                    <i class="bi bi-file-pdf text-danger me-2" style="font-size: 1.5rem;"></i>
+                                    <div>
+                                        <div>Ordonnance.pdf</div>
+                                        <small class="text-muted">98 KB</small>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="reply-form">
+                            <h6>Répondre</h6>
+                            <form>
+                                <div class="mb-3">
+                                    <textarea class="form-control" rows="3" placeholder="Votre réponse..."></textarea>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <button type="button" class="btn btn-outline-primary">
+                                        <i class="bi bi-paperclip"></i> Joindre
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-send"></i> Envoyer
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Nouveau message</h5>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="recipient" class="form-label">Destinataire</label>
+                                <select class="form-select" id="recipient" required>
+                                    <option value="">Sélectionner un destinataire</option>
+                                    <option value="1">Dr. Ndiaye Abdoulaye</option>
+                                    <option value="2">Dr. Fall Aminata</option>
+                                    <option value="3">Service Laboratoire</option>
+                                    <option value="4">Service Radiologie</option>
+                                    <option value="5">Secrétariat</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Sujet</label>
+                                <input type="text" class="form-control" id="subject" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="content" class="form-label">Message</label>
+                                <textarea class="form-control" id="content" rows="5" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="attachment" class="form-label">Pièce jointe (optionnel)</label>
+                                <input class="form-control" type="file" id="attachment">
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-send"></i> Envoyer le message
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .avatar-circle {
+            width: 50px;
+            height: 50px;
+            background-color: #3498db;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .avatar-initials {
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .message-content {
+            border-left: 3px solid #3498db;
+            padding-left: 15px;
+        }
+    </style>
+{% endblock %} 

@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Prendre un rendez-vous - Clinique 221{% endblock %}
+
+{% block body %}
+    <div class="container py-4">
+        <div class="mb-4">
+            <a href="{{ path('app_patient_dashboard') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Retour au tableau de bord
+            </a>
+        </div>
+        
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0 fs-4">Prendre un rendez-vous</h2>
+            </div>
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                
+                <div class="mb-3">
+                    {{ form_label(form.type, 'Type de rendez-vous', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.type, {'attr': {'class': 'form-select'}}) }}
+                    {{ form_errors(form.type) }}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form_label(form.motif, 'Motif du rendez-vous', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.motif, {'attr': {'class': 'form-control', 'placeholder': 'Décrivez brièvement votre besoin...'}}) }}
+                    {{ form_errors(form.motif) }}
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        {{ form_label(form.date, 'Date', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.date) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_label(form.heure, 'Heure', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.heure, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.heure) }}
+                    </div>
+                </div>
+                
+                <div id="medecin-section" class="mb-3">
+                    {{ form_label(form.medecin, 'Médecin', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.medecin, {'attr': {'class': 'form-select'}}) }}
+                    {{ form_errors(form.medecin) }}
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-calendar-plus"></i> Confirmer le rendez-vous
+                    </button>
+                </div>
+                
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeSelect = document.querySelector('#rendez_vous_type');
+        const medecinSection = document.querySelector('#medecin-section');
+        
+        function toggleMedecinField() {
+            if (typeSelect.value === 'consultation') {
+                medecinSection.style.display = 'block';
+            } else {
+                medecinSection.style.display = 'none';
+            }
+        }
+        
+        // Initial check
+        toggleMedecinField();
+        
+        // Listen for changes
+        typeSelect.addEventListener('change', toggleMedecinField);
+    });
+</script>
+{% endblock %} 
